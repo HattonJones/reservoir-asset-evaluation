@@ -1,90 +1,56 @@
-# Reservoir Asset Evaluation Engine
+Reservoir Asset Evaluation Engine
+
 I am a petroleum engineering student at the University of Texas at Austin working toward becoming a reservoir engineer. I decided to build this simulator rather than just read a textbook, to learn the physics and economics of a well while having a little fun. It was, and it only furthered my interest in the energy sector.
 
+The project does the full loop a reserves evaluator runs on a producing asset: simulate the physics, turn the production into cash flow, and find the design that makes the most money instead of the most barrels.
 
-A 2D two-phase reservoir simulator built from scratch in Python, validated
-against the Buckley-Leverett analytical solution, and coupled to a discounted
-cash flow model that optimizes waterflood design on NPV instead of recovery.
+The physics. I wrote a 2D two-phase (oil and water) simulator in Python using the IMPES method: solve pressure implicitly with a sparse matrix, then move water saturation explicitly with upstream weighting. It handles any permeability field you give it, uses Corey relative permeability curves, and picks its own stable time step from the CFL condition. Every run prints a water mass balance check, and it comes back at machine precision (about 1e-14), so mass is conserved by construction, not by luck.
 
-The goal is the full arc an acquisitions and divestitures (A&D) team runs on a
-producing asset: simulate the physics, convert production to cash flow, and
-find the design that maximizes value rather than barrels.
+Proving it works. A simulator is only worth trusting if it can reproduce a known answer. The 1D Buckley-Leverett problem has an exact analytical solution, so I ran my simulator against it. The saturation profiles land on top of the analytical solution, breakthrough timing and recovery agree within 1.2% on a 200-cell grid, and refining the grid sharpens the front toward the exact answer.
 
-**Physics.** IMPES (implicit pressure, explicit saturation) finite-volume
-scheme for incompressible, immiscible oil-water flow. Sparse implicit pressure
-solve, upstream-weighted explicit transport, CFL-limited time stepping, Corey
-relative permeabilities, arbitrary heterogeneous permeability fields. Every run
-prints a water material balance error, which comes back at machine precision
-(~1e-14).
+Show Image
 
-**Validation.** The simulator reproduces the exact Buckley-Leverett solution in
-1D: saturation profiles match the Welge rarefaction and shock, breakthrough
-timing and recovery at breakthrough agree within 1.2% on a 200-cell grid, and a
-grid refinement study shows convergence to the analytical front.
+The economics. The production stream feeds a monthly discounted cash flow model: flat oil price, 25% royalty, fixed and variable opex, water handling costs, and facilities capex that scales with injection rate. Production stops at the economic limit, the first month cash flow goes negative. Sweeping the injection rate shows the whole point of the project: NPV peaks at 750 bbl/d, but recovered barrels keep climbing all the way to 3,000 bbl/d. Chasing maximum barrels instead of maximum value gives up about $2.2MM on a $5.6MM asset. More oil is not more value.
 
-![Buckley-Leverett validation](figures/validation_buckley_leverett.png)
+Show Image
 
-**Economics.** Monthly DCF with a flat price deck, royalty, fixed and variable
-opex, water handling costs, rate-dependent facilities capex, and truncation at
-the economic limit. Sweeping injection rate shows NPV peaking at an interior
-optimum (750 bbl/d under base assumptions) while EUR keeps rising with rate.
-Designing for maximum barrels instead of maximum value gives up about $2.2MM
-on a $5.6MM asset.
+Key results
 
-![NPV optimization](figures/npv_optimization.png)
+StudyWhat I foundValidation (1D, 200 cells)Breakthrough and recovery within 1.2% of the analytical solutionMobility ratio (M = 0.19 to 3.89)Recovery at 1 PVI falls from 0.97 to 0.74 as M risesHeterogeneity (same 200 mD average)A connected high-perm channel cuts recovery from 0.84 to 0.51NPV optimizationValue peaks at 750 bbl/d; barrels peak at the highest rate tested
 
-## Key results
+Show Image
 
-| Study | Finding |
-|---|---|
-| Validation (1D, 200 cells) | Breakthrough and recovery within 1.2% of the analytical solution |
-| Mobility ratio (M = 0.19 to 3.89) | Recovery at 1 PVI falls from 0.97 to 0.74 as M rises |
-| Heterogeneity (same 200 mD average) | A connected high-perm channel cuts recovery from 0.84 to 0.51 |
-| NPV optimization | Value peaks at 750 bbl/d; barrels peak at the highest rate tested |
+What is in here
 
-![Heterogeneity](figures/heterogeneity_fields.png)
-
-## Repository structure
-
-```
-reservoir_sim.py               core simulator (Config + Simulator), base case when run directly
-validate_buckley_leverett.py   1D validation vs the analytical solution
-mobility_ratio_study.py        four mobility ratios, sweep and recovery comparison
-heterogeneity_study.py         channel and correlated log-normal permeability fields
-economics.py                   Layer 2: DCF, economic limit, NPV-vs-rate optimization
-writeup/simulator_writeup.md   governing equations, discretization, validation, results
+reservoir_sim.py               the core simulator, run it directly for the base case
+validate_buckley_leverett.py   1D check against the analytical solution
+mobility_ratio_study.py        four oil viscosities, sweep and recovery comparison
+heterogeneity_study.py         channel and random permeability fields
+economics.py                   DCF model, economic limit, NPV vs injection rate
+writeup/simulator_writeup.md   the full math, validation, results, and limitations
 figures/                       all output figures
-```
 
-## Running it
+Running it
 
-```
 pip install -r requirements.txt
-python reservoir_sim.py                  # base case, three figures
-python validate_buckley_leverett.py      # validation figure and error report
+python reservoir_sim.py
+python validate_buckley_leverett.py
 python mobility_ratio_study.py
 python heterogeneity_study.py
-python economics.py                      # economics table and NPV figure
-```
+python economics.py
 
-Each script prints a summary table (including the mass balance check) and
-saves figures to `figures/`.
+Each script prints a summary table (including the mass balance check) and saves its figures to figures/.
 
-## Scope and honesty
+Being upfront about scope
 
-Everything here is built from first principles in Python (NumPy, SciPy,
-Matplotlib). It is not a claim of hands-on experience with commercial tools
-like ARIES, PHDWin, or ComboCurve; it is the underlying methods those tools
-implement, written and validated by hand. Known simplifications (no
-compressibility, gravity, or capillary pressure; Dirichlet producer instead of
-a Peaceman well index; first-order transport) are documented in the writeup
-with the reasoning and the standard fixes.
+I built everything here from first principles in Python (NumPy, SciPy, Matplotlib), with AI as a coding assistant along the way. I have not used commercial tools like ARIES, PHDWin, or ComboCurve hands-on; this project is my way of understanding the methods those tools run under the hood. The model leaves things out on purpose (no compressibility, gravity, or capillary pressure, a simple well model, first-order transport), and the writeup covers each one with the reasoning and the standard fix.
 
-## Roadmap
+What is next
 
-- Monte Carlo layer over permeability, OOIP, and price for P10/P50/P90
-  reserves and valuation distributions
-- Peaceman well model and multi-well patterns
-- Decline curve module: fit Arps models to simulated production and compare
-  estimated EUR against the known true answer
-- Streamlit dashboard for interactive sensitivity analysis
+
+Monte Carlo over permeability, oil in place, and price for P10/P50/P90 reserves and value
+A proper Peaceman well model and multi-well patterns
+A decline curve module: fit Arps curves to my own simulated production and see how close the estimated EUR gets to the true answer
+An interactive dashboard for sensitivity analysis
+
+Contentreservoir_engineering_project_final.zipzip

@@ -1,4 +1,10 @@
 # Reservoir Asset Evaluation Engine
+I am a Petroleum Engineering student at the University of Texas at Austin 
+working toward becoming a Reservoir Engineer. I decided to build this simulator 
+rather than read a textbook to learn more about the economics and physics of a 
+well while having a little bit of fun. It indeed was fun and just furthers my 
+passion of the energy sector and Reservoir and Petroleum Engineering.
+
 
 A 2D two-phase reservoir simulator built from scratch in Python, validated
 against the Buckley-Leverett analytical solution, and coupled to a discounted

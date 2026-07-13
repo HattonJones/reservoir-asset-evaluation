@@ -1,0 +1,21 @@
+DECLINE CURVE ANALYSIS SUMMARY
+==============================================
+Well:            HARRISON LH A 1H
+API:             42-203-35464
+Data source:     Texas RRC PDQ monthly gas volumes
+Producing months:   49   (fit from peak month, n=48)
+
+Best-fit model:  hyperbolic   (log-space R2 = 0.8923)
+  qi = 23,871 Mcf/d
+  Di = 0.0982 /month nominal  (69.2%/yr effective)
+  b  = 0.73
+Terminal decline switch: 6%/yr
+Economic limit:  100 Mcf/d
+
+Cum to date:     12.12 Bcf
+EUR:             20.59 Bcf
+
+All-model comparison (log-space R2):
+  exponential  qi=    17,726  Di=0.0403  b=0.00  R2=0.8617
+  hyperbolic   qi=    23,871  Di=0.0982  b=0.73  R2=0.8923
+  harmonic     qi=    26,618  Di=0.1458  b=1.00  R2=0.8875

@@ -14,6 +14,11 @@ The project does the full loop a reserves evaluator runs on a producing asset: s
 
 ![NPV optimization](figures/npv_optimization.png)
 
+## Phase 2: decline curve analysis on a real well
+
+The decline module from the roadmap below is now built and lives in [`phase2_haynesville_dca/`](phase2_haynesville_dca/). It takes real public production data for a producing Haynesville gas well (Harrison LH A 1H, Comstock Resources, from the Texas Railroad Commission) and runs the reserves side of the workflow: fit Arps curves in log space, apply a terminal decline switch to bound EUR, and forecast to an economic limit. Best fit is hyperbolic with b = 0.73 and EUR = 20.59 Bcf against 12.12 Bcf produced to date. Method and limitations are written up in the folder.
+
+
 ## Key results
 
 | Study | What I found |

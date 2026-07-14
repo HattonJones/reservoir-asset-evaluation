@@ -1,4 +1,5 @@
 # Reservoir Asset Evaluation Engine
+![tests](https://github.com/HattonJones/reservoir-asset-evaluation/actions/workflows/ci.yml/badge.svg)
 
 I am a petroleum engineering student at the University of Texas at Austin working toward becoming a reservoir engineer. I decided to build this simulator rather than just read a textbook, to learn the physics and economics of a well while having a little fun. It was, and it only furthered my interest in the energy sector.
 

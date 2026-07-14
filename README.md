@@ -63,5 +63,4 @@ I built everything here from first principles in Python (NumPy, SciPy, Matplotli
 
 - Monte Carlo over permeability, oil in place, and price for P10/P50/P90 reserves and value
 - A proper Peaceman well model and multi-well patterns
-- A decline curve module: fit Arps curves to my own simulated production and see how close the estimated EUR gets to the true answer
 - An interactive dashboard for sensitivity analysis
